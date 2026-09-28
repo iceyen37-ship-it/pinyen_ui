@@ -41,7 +41,7 @@ jobs:
         env:
           SWALLOWCARE_KEYSTORE_PASSWORD: ${{ secrets.SWALLOWCARE_KEYSTORE_PASSWORD }}
           SWALLOWCARE_KEY_ALIAS: ${{ secrets.SWALLOWCARE_KEY_ALIAS }}
-          SWALLOWCARE_KEY_PASSWORD: ${{ secrets.SWALLOWCARE_KEY_PASSWORD }}
+          SWALLOWCARE_KEY_PASSWORD: ${{ secrets.SWALLOWCARE_KEYSTORE_PASSWORD }}
         run: ./gradlew --no-daemon assembleDebug bundleRelease
 
       - uses: actions/upload-artifact@v4
