@@ -8,9 +8,10 @@
 
 1. **完全離線運行**：所有 HTML/CSS/JS/圖片資源打包於 `app/src/main/assets/www` 內。
 2. **全螢幕原生沉浸式體驗**：自動隱藏展示邊框與劉海，符合 Android 狀態列與手勢操作。
-3. **支援拍照與圖片上傳**：內建 `WebChromeClient` 檔案選擇器與權限配置，支援拍照紀錄餐點與安心錄。
+3. **不需任何敏感權限**：只使用網路權限（播放示範影片），不要求相機、麥克風或相簿，Google Play 審查較單純。
 4. **Android 返回鍵支援**：按實體/手勢返回鍵時，優先返回上一層畫面，避免直接退出 App。
-5. **硬體加速與快取**：開啟硬體加速與 DOM Storage，滑動流暢不卡頓。
+5. **紀錄保存在手機內**：餐點與安心錄紀錄存在 App 內（DOM Storage），關掉 App 再開仍在；解除安裝 App 會一併刪除。
+6. **符合 Google Play 2026 規定**：targetSdk / compileSdk 36（Android 16），支援 Android 15 以上強制的全螢幕（edge-to-edge）顯示。
 
 ---
 
@@ -45,6 +46,30 @@
 1. 在 Android Studio 頂部選單點擊 **Build** -> **Build Bundle(s) / APK(s)** -> **Build APK(s)**。
 2. 編譯完成後，右下角會出現提示視窗，點擊 **locate** 即可找到產生的 `app-debug.apk`。
 3. 將該 `.apk` 檔案傳送至 Android 手機點擊即可直接安裝！
+
+---
+
+## ☁️ 不用 Android Studio：讓 GitHub 自動打包
+
+每次推送 `android/` 內的變更到 GitHub，`.github/workflows/android.yml` 會自動編譯，也可以在 GitHub 的 **Actions → Build Android app → Run workflow** 手動執行。完成後在該次執行頁面底部的 **Artifacts** 下載：
+
+- `SwallowCare-test-apk`：`app-debug.apk`，直接傳到 Android 手機安裝測試。
+- `SwallowCare-play-store-aab`：`app-release.aab`，上傳到 Google Play Console。
+
+### 上架用的簽署金鑰（只需設定一次）
+在 GitHub 專案的 **Settings → Secrets and variables → Actions → New repository secret** 新增四個 secret：
+
+| 名稱 | 內容 |
+|---|---|
+| `SWALLOWCARE_KEYSTORE_BASE64` | 上傳金鑰檔（.jks）的 base64 文字 |
+| `SWALLOWCARE_KEYSTORE_PASSWORD` | 金鑰庫密碼 |
+| `SWALLOWCARE_KEY_ALIAS` | `upload` |
+| `SWALLOWCARE_KEY_PASSWORD` | 金鑰密碼 |
+
+沒有設定 secret 時仍會產生 APK，但 `.aab` 未簽署、無法上傳 Google Play。**金鑰檔與密碼請勿放進 git**，遺失時可透過 Play Console 申請重設上傳金鑰。
+
+### 每次更新上架前
+把 `app/build.gradle` 的 `versionCode` 加 1（例如 1 → 2），`versionName` 視需要改成 `1.0.1` 等。
 
 ---
 
